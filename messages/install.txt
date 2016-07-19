@@ -1,0 +1,41 @@
+
+DataikuSublimeText
+==================
+
+Sublime Text extension to edit Dataiku DSS recipes remotely.
+
+https://github.com/jereze/DataikuSublimeText
+
+## Requirements:
+
+* Sublime Text 3
+* Dataiku DSS 3.1 or further
+* Access to Dataiku Public API (with a valid key)
+
+## Configuration:
+
+Search for the command (ctrl+maj+P) "Dataiku: Edit DSS instances".
+It opens a configuration files. Complete it with the following model:
+
+{
+    "instances": [
+        {
+            "name": "My DSS Instance",
+            "base_url": "http://example.com:1000",
+            "api_key": "xxx",
+            "list_of_project_keys_to_exclude": [],
+            "keep_only_code_recipes": true
+        }
+    ]
+}
+
+
+## Usage:
+
+Search for the command (ctrl+maj+P) "Dataiku: Browse DSS Instances".
+Then, navigate through the recipes, select one.
+It opens the recipe in a new tab.
+When saving, the recipe is saved on the DSS instance via the API.
+You should close the tab as soon as you have finished editing, because the sync is not handle.
+
+

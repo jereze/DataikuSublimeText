@@ -6,7 +6,7 @@ import os
 import base64
 import json
 
-settings = sublime.load_settings("dss_instances.sublime-settings")
+settings = sublime.load_settings("dataiku_instances.sublime-settings")
 temp_dir = os.path.join(sublime.cache_path(),'Dataiku')
 
 def stringToBase64(s):
@@ -15,7 +15,20 @@ def stringToBase64(s):
 def base64ToString(b):
     return base64.b64decode(b.encode()).decode()
 
-#Parameters: action (the URL), params, method (GET or PUT), data for PUT
+def recipeTypeToExtension(recipe_type):
+    if "py" in recipe_type:
+        return 'py'
+    elif "sql" in recipe_type or recipe_type == "hive" or recipe_type == "impala":
+        return 'sql'
+    elif recipe_type in ["r", "sparkr"]:
+        return 'r'
+    elif recipe_type == "shaker":
+        return 'json'
+    else:
+        return 'txt'
+
+
+# Wrapper to make API call to a DSS instance
 def api_dss(base_url, key, action, params = {}, method = 'get', data = {}):
     if not base_url.endswith('/'):
         base_url = base_url + '/'
@@ -29,14 +42,11 @@ def api_dss(base_url, key, action, params = {}, method = 'get', data = {}):
         r = requests.request(method, url, data=data, params=params, auth=HTTPBasicAuth(key, ''), headers=headers)
     else:
         raise ValueError('Method should be get or put.')
-        #todo: support other methods
-    #print 'API call: ' + r.url
-    #print r.text
     if r.status_code < 300:
         return r.json()
     else:
+        sublime.error_message('API error when callin: ' + method + ' ' + r.url)
         raise ValueError('API error when calling ' + r.url + '\n' + r.text)
-
 
 
 def browse_instances(window):
@@ -58,7 +68,7 @@ def browse_instances(window):
         "caption": "Edit DSS instances",
         "command": "open_file",
         "args": {
-            "file": "${packages}/User/dss_instances.sublime-settings"
+            "file": "${packages}/User/dataiku_instances.sublime-settings"
         }
     })
 
@@ -78,15 +88,20 @@ def browse_recipes(window, instance):
 
     dss_url = instance.get('base_url', '')
     dss_key = instance.get('api_key', '')
+    list_of_project_keys_to_exclude = instance.get('list_of_project_keys_to_exclude', [])
+    keep_only_code_recipes = instance.get('keep_only_code_recipes', True)
 
     projects = api_dss(dss_url, dss_key, 'projects')
-    projects_keys = [project['projectKey'] for project in projects]
+    projects_keys = [project['projectKey'] for project in projects if project['projectKey'] not in list_of_project_keys_to_exclude]
 
     for project_key in projects_keys:
         for recipe in api_dss(dss_url, dss_key, "projects/%s/recipes/" % project_key):
 
+            if keep_only_code_recipes == True and recipeTypeToExtension(recipe.get('type')) not in ['py', 'sql', 'r']:
+                continue
+
             commands.append({
-                "caption": "%s - %s" % (project_key, recipe.get('name')),
+                "caption": "%s - %s (%s)" % (project_key, recipe.get('name'), recipe.get('type')),
                 "command": "dataiku_recipe",
                 "args": {
                     "instance": instance,
@@ -113,16 +128,13 @@ def open_recipe(window, instance, project_key, recipe_name):
     recipe = api_dss(dss_url, dss_key, "projects/%s/recipes/%s" % (project_key, recipe_name))
     
     recipe_type = recipe.get('recipe').get('type', '')
-    if "python" in recipe_type:
-        ext = '.py'
-    elif "sql" in recipe_type:
-        ext = '.sql'
-    elif "r" in recipe_type:
-        ext = '.r'
-    else:
-        ext = '.txt'
 
-    local_file = os.path.normpath(os.path.join(temp_dir,stringToBase64(dss_url),stringToBase64(dss_key),project_key,recipe_name+ext))
+    local_file = os.path.normpath(os.path.join( temp_dir,
+                                                stringToBase64(dss_url),
+                                                stringToBase64(dss_key),
+                                                project_key,
+                                                recipe_name+'.'+recipeTypeToExtension(recipe_type)
+                                                ))
     print(local_file)
 
     if not os.path.exists(os.path.dirname(local_file)):
@@ -155,10 +167,9 @@ class RecipeEditListener(sublime_plugin.EventListener):
         When a recipe is saved, save it back to the DSS instance.
         """
         file = view.file_name()
-        print(file)
 
         if temp_dir in file:
-            print("This is a file managed by Dataiku Plugin")
+            print("Sending saved document %s" % file)
             recipe_name = file.split(os.sep)[-1]
             project_key = file.split(os.sep)[-2]
             dss_key = base64ToString(file.split(os.sep)[-3])
@@ -175,11 +186,10 @@ class RecipeEditListener(sublime_plugin.EventListener):
 
     def on_close(self, view):
         """
-        When a remote file is closed delete the local temp file and directory.
-        We also no longer keep a record of it in our remote files list.
+        When a recipe is closed, delete the local temp file.
         """
         file = view.file_name()
-        print(file)
+
         if temp_dir in file:
-            print("This is a file managed by Dataiku Plugin")
+            print("Removing closed document %s" % file)
             os.remove(file)
