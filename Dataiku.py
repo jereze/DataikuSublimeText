@@ -7,7 +7,8 @@ import base64
 import json
 
 settings = sublime.load_settings("Dataiku.sublime-settings")
-temp_dir = os.path.join(sublime.cache_path(),'Dataiku')
+temp_dir = os.path.abspath(os.path.join(sublime.cache_path(),'Dataiku'))
+print("DataikuSublimeText -", "Temp directory:", temp_dir)
 
 def stringToBase64(s):
     return base64.b64encode(s.encode()).decode()
@@ -129,18 +130,18 @@ def open_recipe(window, instance, project_key, recipe_name):
     
     recipe_type = recipe.get('recipe').get('type', '')
 
-    local_file = os.path.normpath(os.path.join( temp_dir,
+    local_file = os.path.abspath(os.path.join( temp_dir,
                                                 stringToBase64(dss_url),
                                                 stringToBase64(dss_key),
                                                 project_key,
                                                 recipe_name+'.'+recipeTypeToExtension(recipe_type)
                                                 ))
-    print("Opening recipe in",local_file)
+    print("DataikuSublimeText -", "Opening recipe in",local_file)
 
     if not os.path.exists(os.path.dirname(local_file)):
         os.makedirs(os.path.dirname(local_file))
 
-    with open(local_file, 'w') as file_:
+    with open(local_file, 'w', encoding="utf-8") as file_:
         file_.write(recipe.get('payload', 'ERROR. Unable to download the recipe.'))
 
     sublime.set_timeout(lambda:window.open_file(local_file), 0)
@@ -167,19 +168,19 @@ class RecipeEditListener(sublime_plugin.EventListener):
         file = view.file_name()
 
         if temp_dir in file:
-            print("Sending saved document %s" % file)
+            print("DataikuSublimeText -", "Sending saved document %s" % file)
             recipe_name = file.split(os.sep)[-1]
             project_key = file.split(os.sep)[-2]
             dss_key = base64ToString(file.split(os.sep)[-3])
             dss_url = base64ToString(file.split(os.sep)[-4])
-            print(dss_url, dss_key, project_key, recipe_name)
-            with open(file, 'r') as file_:
+            print("DataikuSublimeText -", dss_url, dss_key, project_key, recipe_name)
+            with open(file, 'r', encoding="utf-8") as file_:
                 content = file_.read()
-            #print(content)
+            #print("DataikuSublimeText -", content)
             recipe_name_no_ext =  os.path.splitext(recipe_name)[0]
             recipe = api_dss(dss_url, dss_key, "projects/%s/recipes/%s" % (project_key, recipe_name_no_ext))
             recipe['payload'] = content
-            print(api_dss(dss_url, dss_key, "projects/%s/recipes/%s" % (project_key, recipe_name_no_ext), method = 'put', data = json.dumps(recipe)))
+            print("DataikuSublimeText -", api_dss(dss_url, dss_key, "projects/%s/recipes/%s" % (project_key, recipe_name_no_ext), method = 'put', data = json.dumps(recipe)))
 
 
     def on_close(self, view):
@@ -189,5 +190,5 @@ class RecipeEditListener(sublime_plugin.EventListener):
         file = view.file_name()
 
         if file and temp_dir in file:
-            print("Removing closed document %s" % file)
+            print("DataikuSublimeText -", "Removing closed document:", file)
             os.remove(file)
