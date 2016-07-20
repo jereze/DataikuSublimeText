@@ -37,9 +37,9 @@ def api_dss(base_url, key, action, params = {}, method = 'get', data = {}):
     url = '%spublic/api/%s' % (base_url, action)
     headers = {'content-type': 'application/json'}
     if method == 'get':
-        r = requests.request(method, url, params=params, auth=HTTPBasicAuth(key, ''))
+        r = requests.request(method, url, params=params, auth=HTTPBasicAuth(key, ''), timeout=2)
     elif method == 'put':
-        r = requests.request(method, url, data=data, params=params, auth=HTTPBasicAuth(key, ''), headers=headers)
+        r = requests.request(method, url, data=data, params=params, auth=HTTPBasicAuth(key, ''), headers=headers, timeout=10)
     else:
         raise ValueError('Method should be get or put.')
     if r.status_code < 300:
