@@ -1,7 +1,7 @@
 {
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"url": "https://github.com/jereze/DataikuSublimeText",
-	"description": "Sublime Text extension to edit Dataiku DSS recipes remotely.",
+	"description": "Sublime Text plugin to edit Dataiku DSS recipes remotely.",
 	"sublime_text": ">=3000",
 	"platforms": ["*"]
 }
