@@ -7,7 +7,7 @@
         "caption": "Dataiku: Edit DSS instances",
         "command": "open_file",
         "args": {
-            "file": "${packages}/User/dataiku_instances.sublime-settings"
+            "file": "${packages}/User/Dataiku.sublime-settings"
         }
 	}
 ]

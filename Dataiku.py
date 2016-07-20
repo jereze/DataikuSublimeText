@@ -6,7 +6,7 @@ import os
 import base64
 import json
 
-settings = sublime.load_settings("dataiku_instances.sublime-settings")
+settings = sublime.load_settings("Dataiku.sublime-settings")
 temp_dir = os.path.join(sublime.cache_path(),'Dataiku')
 
 def stringToBase64(s):
@@ -68,7 +68,7 @@ def browse_instances(window):
         "caption": "Edit DSS instances",
         "command": "open_file",
         "args": {
-            "file": "${packages}/User/dataiku_instances.sublime-settings"
+            "file": "${packages}/User/Dataiku.sublime-settings"
         }
     })
 
@@ -135,7 +135,7 @@ def open_recipe(window, instance, project_key, recipe_name):
                                                 project_key,
                                                 recipe_name+'.'+recipeTypeToExtension(recipe_type)
                                                 ))
-    print(local_file)
+    print("Opening recipe in",local_file)
 
     if not os.path.exists(os.path.dirname(local_file)):
         os.makedirs(os.path.dirname(local_file))
@@ -153,12 +153,10 @@ class DataikuInstancesCommand(sublime_plugin.WindowCommand):
 
 class DataikuRecipesCommand(sublime_plugin.WindowCommand):
     def run(self, instance):
-        print(instance)
         browse_recipes(self.window, instance)
 
 class DataikuRecipeCommand(sublime_plugin.WindowCommand):
     def run(self, instance, project_key, recipe_name):
-        print(instance, project_key, recipe_name)
         open_recipe(self.window, instance, project_key, recipe_name)
 
 class RecipeEditListener(sublime_plugin.EventListener):
@@ -190,6 +188,6 @@ class RecipeEditListener(sublime_plugin.EventListener):
         """
         file = view.file_name()
 
-        if temp_dir in file:
+        if file and temp_dir in file:
             print("Removing closed document %s" % file)
             os.remove(file)
