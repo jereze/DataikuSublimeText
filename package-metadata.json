@@ -1,7 +1,8 @@
 {
+	"name": "Dataiku",
+	"description": "Sublime Text plugin to edit Dataiku DSS recipes remotely.",
 	"version": "0.2.0",
 	"url": "https://github.com/jereze/DataikuSublimeText",
-	"description": "Sublime Text plugin to edit Dataiku DSS recipes remotely.",
 	"sublime_text": ">=3000",
 	"platforms": ["*"]
 }
