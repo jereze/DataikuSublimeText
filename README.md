@@ -1,7 +1,7 @@
 DataikuSublimeText
 ==================
 
-Sublime Text plugin to edit Dataiku DSS recipes remotely.
+Sublime Text plugin to edit [Dataiku DSS](https://www.dataiku.com/dss/) recipes remotely.
 
 ## Requirements:
 
