@@ -11,7 +11,7 @@ Below are some quick notes to get you started with the plugin. Please see https:
 
 ## Configuration:
 
-Search for the command (Ctrl+Maj+P or Cmd+Maj+P) "Dataiku: Edit DSS instances".
+Open the Command Palette (Ctrl+Shift+P or Cmd+Shift+P) and search for "Dataiku: Edit DSS instances".
 It opens a configuration files. Complete it with the following model:
 
 {
@@ -29,10 +29,10 @@ It opens a configuration files. Complete it with the following model:
 
 ## Usage:
 
-Search for the command (Ctrl+Maj+P or Cmd+Maj+P) "Dataiku: Browse DSS Instances".
+Open the Command Palette (Ctrl+Shift+P or Cmd+Shift+P) and search for "Dataiku: Browse DSS Instances".
 Then, navigate through the recipes, select one.
 It opens the recipe in a new tab.
 When saving, the recipe is saved on the Dataiku DSS instance via the API.
-You should close the tab as soon as you have finished editing, because the sync is not handle.
+You should close the tab as soon as you have finished editing, because the merge in case of conflicts is not handled.
 
 
