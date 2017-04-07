@@ -37,8 +37,8 @@ def recipeTypeToExtension(recipe_type):
 def api_dss(base_url, key, action, params = {}, method = 'get', data = {}):
     if not base_url.endswith('/'):
         base_url = base_url + '/'
-    if not action.endswith('/'):
-        action = action + '/'
+    # if not action.endswith('/'):
+    #     action = action + '/'
     url = '%spublic/api/%s' % (base_url, action)
     headers = {'content-type': 'application/json'}
     if method == 'get':
@@ -96,7 +96,7 @@ def browse_recipes(window, instance):
     list_of_project_keys_to_exclude = instance.get('list_of_project_keys_to_exclude', [])
     keep_only_code_recipes = instance.get('keep_only_code_recipes', True)
 
-    projects = api_dss(dss_url, dss_key, 'projects')
+    projects = api_dss(dss_url, dss_key, 'projects/')
     projects_keys = [project['projectKey'] for project in projects if project['projectKey'] not in list_of_project_keys_to_exclude]
 
     for project_key in projects_keys:
