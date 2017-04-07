@@ -6,9 +6,13 @@ import os
 import base64
 import json
 
-settings = sublime.load_settings("Dataiku.sublime-settings")
 temp_dir = os.path.abspath(os.path.join(sublime.cache_path(),'Dataiku'))
 print("DataikuSublimeText -", "Temp directory:", temp_dir)
+
+settings = None
+def plugin_loaded():
+    global settings
+    settings = sublime.load_settings("Dataiku.sublime-settings")
 
 def stringToBase64(s):
     return base64.b64encode(s.encode()).decode()
