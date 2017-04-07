@@ -9,7 +9,9 @@ Sublime Text plugin to edit [Dataiku DSS](https://www.dataiku.com/dss/) recipes 
 
 * Sublime Text 3
 * Dataiku DSS 3.1 or further
-* Access to Dataiku DSS Public API (with a valid key)
+* Access to Dataiku DSS Public API (with a valid [API key](https://doc.dataiku.com/dss/latest/api/public/keys.html))
+
+Note: From DSS 4.0, you have to generate a `Personal API key` on a User profile. Before, a `Global API key` was required.
 
 ## Configuration and usage
 
