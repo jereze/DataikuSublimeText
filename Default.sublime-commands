@@ -1,7 +1,11 @@
 [
     {
-        "caption": "Dataiku: Browse DSS Instances",
-        "command": "dataiku_instances"
+        "caption": "Dataiku: Browse DSS recipes",
+        "command": "dataiku_instances_recipes"
+    },
+    {
+        "caption": "Dataiku: Browse DSS plugins",
+        "command": "dataiku_instances_plugins"
     },
     {
         "caption": "Dataiku: Edit DSS instances",
@@ -9,5 +13,5 @@
         "args": {
             "file": "${packages}/User/Dataiku.sublime-settings"
         }
-	}
+    }
 ]

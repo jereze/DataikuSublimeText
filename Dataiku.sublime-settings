@@ -5,6 +5,7 @@
 			"base_url": "http://example.com:1000",
 			"api_key": "xxx",
 			"list_of_project_keys_to_exclude": [],
+			"list_of_plugin_ids_to_exclude": [],
 			"keep_only_code_recipes": true
 		}
 	]
