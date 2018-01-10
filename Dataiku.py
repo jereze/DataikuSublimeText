@@ -15,6 +15,11 @@ def plugin_loaded():
     global settings
     settings = sublime.load_settings("Dataiku.sublime-settings")
 
+def stringToBase64(s):
+    return base64.b64encode(s.encode()).decode()
+
+def base64ToString(b):
+    return base64.b64decode(b.encode()).decode()
 
 def recipeTypeToExtension(recipe_type):
     if "py" in recipe_type:
