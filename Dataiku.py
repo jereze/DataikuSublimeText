@@ -175,8 +175,6 @@ def open_recipe(window, instance, project_key, recipe_name):
     settings.set('dku_recipe_name', recipe_name)
     settings.set('dku_project_key', project_key)
 
-    sublime.set_timeout(lambda:window.open_file(local_file), 0)
-
 # Plugins
 
 def browse_plugins(window, instance):
