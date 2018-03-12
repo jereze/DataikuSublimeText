@@ -33,6 +33,13 @@ def recipeTypeToExtension(recipe_type):
     else:
         return 'txt'
 
+def set_settings(view, content):
+    if not view.is_loading():
+        settings = view.settings()
+        for key, value in content.items():
+            settings.set(key, value)
+    else:
+        sublime.set_timeout(lambda: set_settings(view, content), 10)
 
 # Wrapper to make API call to a DSS instance
 def api_dss(base_url, key, action, params = {}, method = 'get', data = {}, json=True):
@@ -169,11 +176,13 @@ def open_recipe(window, instance, project_key, recipe_name):
     with open(local_file, 'w', encoding="utf-8") as file_:
         file_.write(recipe.get('payload', 'ERROR. Unable to download the recipe.'))
 
-    settings = window.open_file(local_file).settings()
-    settings.set('dku_instance', instance)
-    settings.set('dku_type', 'recipe')
-    settings.set('dku_recipe_name', recipe_name)
-    settings.set('dku_project_key', project_key)
+    view = window.open_file(local_file)
+    set_settings(view, {
+        'dku_instance': instance,
+        'dku_type': 'recipe',
+        'dku_recipe_name': recipe_name,
+        'dku_project_key': project_key
+        })
 
 # Plugins
 
@@ -258,7 +267,7 @@ def open_plugin_file(window, instance, plugin_id, path):
     
     local_file = os.path.abspath(os.path.join(temp_dir, stringToBase64(dss_url), 'plugin', plugin_id, path))
 
-    print("DataikuSublimeText -", "Opening recipe in", local_file)
+    print("DataikuSublimeText -", "Opening plugin file in", local_file)
 
     if not os.path.exists(os.path.dirname(local_file)):
         os.makedirs(os.path.dirname(local_file))
@@ -266,11 +275,15 @@ def open_plugin_file(window, instance, plugin_id, path):
     with open(local_file, 'w', encoding="utf-8") as file_:
         file_.write(plugin)
 
-    settings = window.open_file(local_file).settings()
-    settings.set('dku_instance', instance)
-    settings.set('dku_type', 'plugin')
-    settings.set('dku_path', path)
-    settings.set('dku_plugin_id', plugin_id)
+    sublime.set_timeout(lambda:window.open_file(local_file), 0)
+
+    view = window.open_file(local_file)
+    set_settings(view, {
+        'dku_instance': instance,
+        'dku_type': 'plugin',
+        'dku_path': path,
+        'dku_plugin_id': plugin_id
+        })
 
 # External Commands
 class DataikuInstancesRecipesCommand(sublime_plugin.WindowCommand):
@@ -321,7 +334,7 @@ class RecipeEditListener(sublime_plugin.EventListener):
             plugin_id = settings.get('dku_plugin_id')
             path = settings.get('dku_path')
 
-            content = view.substr(sublime.Region(0, view.size()))
+            content = bytes(view.substr(sublime.Region(0, view.size())), view.encoding())
             api_dss(dss_url, dss_key, "plugins/%s/contents/%s" % (plugin_id, path), method = 'post', data=content, json=False)
             print("DataikuSublimeText -", "Sent plugin file", path)
 
