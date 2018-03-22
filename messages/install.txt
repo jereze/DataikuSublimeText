@@ -1,5 +1,5 @@
 Thanks for installing Dataiku plugin for Sublime Text!
-It allows you to edit Dataiku DSS recipes remotely.
+It allows you to edit Dataiku DSS recipes and plugins remotely.
 
 Below are some quick notes to get you started with the plugin. Please see https://github.com/jereze/DataikuSublimeText for more information.
 
@@ -11,8 +11,8 @@ Below are some quick notes to get you started with the plugin. Please see https:
 
 ## Configuration:
 
-Open the Command Palette (Ctrl+Shift+P or Cmd+Shift+P) and search for "Dataiku: Edit DSS instances".
-It opens a configuration files. Complete it with the following model:
+Open the Command Palette (Ctrl+Shift+P or Cmd+Shift+P) and search for "Dataiku: Configure DSS instances".
+It opens a configuration file. Complete it with the following model:
 
 {
 	"instances": [
@@ -30,10 +30,10 @@ It opens a configuration files. Complete it with the following model:
 
 ## Usage:
 
-Open the Command Palette (Ctrl+Shift+P or Cmd+Shift+P) and search for "Dataiku: Browse DSS Instances".
-Then, navigate through the recipes, select one.
-It opens the recipe in a new tab.
-When saving, the recipe is saved on the Dataiku DSS instance via the API.
+Open the Command Palette (Ctrl+Shift+P or Cmd+Shift+P) and search for "Dataiku: Edit DSS recipes" or "Dataiku: Edit DSS plugins".
+Then, navigate through the recipes or plugins files, select one.
+It opens the item in a new tab.
+When saving, the item is saved on the Dataiku DSS instance via the API.
 You should close the tab as soon as you have finished editing, because the merge in case of conflicts is not handled.
 
 

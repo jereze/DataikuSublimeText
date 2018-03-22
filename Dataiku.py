@@ -98,7 +98,7 @@ def browse_instances(window, type):
                 })
 
     commands.append({
-        "caption": "Edit DSS instances",
+        "caption": "Configure DSS instances",
         "command": "open_file",
         "args": {
             "file": "${packages}/User/Dataiku.sublime-settings"
